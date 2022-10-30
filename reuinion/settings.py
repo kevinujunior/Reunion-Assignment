@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from lib2to3.pgen2.token import SLASH
 from pathlib import Path
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -145,3 +146,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 #APPEND_SLASH = True
 
 
+django_heroku.settings(locals())
