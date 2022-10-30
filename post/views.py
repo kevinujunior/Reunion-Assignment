@@ -1,3 +1,5 @@
+from logging import raiseExceptions
+from django.http import Http404
 from rest_framework import viewsets
 from post.serializers import PostSerializer, LikeViewSerializer, UnLikeViewSerializer, CommentSerializer, AllPostSerializer
 from .models import Post, Like, Comment
@@ -5,11 +7,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import generics
+from django.core.exceptions import ValidationError
+from django.core.exceptions import BadRequest
+
 # Create your views here.
 
 
 class PostCreateViewSet(viewsets.ModelViewSet):
-    #http_method_names = ['get']
     permission_classes = [IsAuthenticated]
     serializer_class = PostSerializer
   
@@ -102,10 +106,13 @@ class CommentViewSet(generics.CreateAPIView, generics.RetrieveAPIView):
         return serializer_class(*args, **kwargs)
     
     def create(self, request, *args, **kwargs):
-        comment = request.data
+        data = request.data
         user = self.request.user
         post = Post.objects.get(id=self.kwargs.get('pk'))
-        obj = Comment.objects.create(user=user,post = post, comment = comment)
+        if(data['comment']==''):
+            return Response('Invalid request.', status.HTTP_400_BAD_REQUEST)
+        obj = Comment.objects.create(user=user,post = post, comment = data)
+             
         return Response({'id':obj.id})
         
         

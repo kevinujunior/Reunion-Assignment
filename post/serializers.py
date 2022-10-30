@@ -1,8 +1,7 @@
 from rest_framework import serializers
 from .models import  Post, Like,Comment
 from rest_framework.response import Response
-
-
+from django.core.exceptions import ValidationError
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
@@ -45,7 +44,6 @@ class CommentSerializer(serializers.ModelSerializer):
         request = self.context.get('request', None)
         post = self.validated_data['post']
         comment = self.validated_data['comment']
-        
         return Comment(**validated_data)
 
 class CommentForPostSerializer(serializers.ModelSerializer):
